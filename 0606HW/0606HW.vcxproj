@@ -124,6 +124,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="0606HW.cpp" />
+    <ClCompile Include="HW.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="HW.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
