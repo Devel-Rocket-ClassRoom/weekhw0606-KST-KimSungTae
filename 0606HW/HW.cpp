@@ -107,17 +107,20 @@ void PrintMap() {
             printf("공격 실패! 빈 칸을 공격했습니다.\n");
         }
 
-        int PlayerX = 0, PlayerY = 0;
+        int PlayerX = -1, PlayerY = -1;
 
 
         printf("공격할 좌표를 입력하세요 (x y): ");
-        cin >> PlayerX;
-        cin >> PlayerY;             //진짜 좌표는(MapRows-PlayerY-1,PlayerX-1)로 변환해서 사용해야할듯
         while (1) {
+            cin >> PlayerX;
+            cin >> PlayerY;             //진짜 좌표는(MapRows-PlayerY-1,PlayerX-1)로 변환해서 사용해야할듯
             if (PlayerX >= MapCols || PlayerY >= MapRows || PlayerX < 1 || PlayerY < 1)
             {
                 printf("잘못된 좌표입니다. 다시 입력해주세요.\n");
-                PlayerX = 0, PlayerY = 0;
+                printf("공격할 좌표를 입력하세요 (x y): ");
+                PlayerX = -1;
+                PlayerY = -1;
+                continue;
 
             }
             else
