@@ -46,19 +46,35 @@ int Map[MapRows][MapCols] =
 
 
  //맵 출력
-void PrintMap() {
+void PrintMap()
+{
     srand(time(0));
     PlaceShip(2);
     PlaceShip(3);
     PlaceShip(4);
     PlaceShip(5);
+    int Ship2 = 0;
+    int Ship3 = 0;
+    int Ship4 = 0;
+    int Ship5 = 0;
+    int PlayerX = -1, PlayerY = -1;
+
+
+
+
+
+    int attackCount = 30;
+
     int Clear = 0;
     int Hit = -1;
-    while (Clear != 4)
+    while (Clear != 4 && attackCount > 0)
     {
-		system("cls");
+        system("cls");
+
         for (int h = 0; h < MapRows; h++)
         {
+            printf("%2d |", MapRows - h);
+
             for (int w = 0; w < MapCols; w++)
             {
                 int temp = Map[h][w];
@@ -76,27 +92,39 @@ void PrintMap() {
                 }
                 else if (Map[h][w] == 2)
                 {
-                    printf("2\t");
+                    printf(".\t");
                 }
                 else if (Map[h][w] == 3)
                 {
-                    printf("3\t");
+                    printf(".\t");
                 }
                 else if (Map[h][w] == 4)
                 {
-                    printf("4\t");
+                    printf(".\t");
                 }
                 else if (Map[h][w] == 5)
                 {
-                    printf("5\t");
+                    printf(".\t");
                 }
                 else if (Map[h][w] >= 6)
                 {
                     printf("O\t");
+
                 }
             }
             printf("\n");
+
         }
+        printf("    -----------------------------------------------------------------------");
+        printf("\n");
+        printf("    1\t");
+        for (int x = 2; x <= MapCols; x++)
+        {
+            printf("%d\t", x);
+        }
+
+        printf("\n");
+        
 
         if (Hit == 0)
         {
@@ -107,14 +135,47 @@ void PrintMap() {
             printf("공격 실패! 빈 칸을 공격했습니다.\n");
         }
 
-        int PlayerX = -1, PlayerY = -1;
+
+        if (Ship2 == 2)
+        {
+            Ship2 = -100;
+            printf("구축함 격침!\n");
+		}
+        if (Ship3 == 3)
+        {
+            Ship3 = -100;
+            printf("순양함 격침!\n");
+		}
+        if (Ship4 == 4)
+        {
+            Ship4 = -100;
+            printf("전함 격침!\n");
+        }
+        if(Ship5 == 5)
+        {
+            Ship5 = -100;
+            printf("항공모함 격침!\n");
+		}
+
+        printf("남은 공격 횟수: %d\t남은 함선의 개수 : %d\n", attackCount, 4 - Clear);
 
 
         printf("공격할 좌표를 입력하세요 (x y): ");
-        while (1) {
+        while (1)
+        {
             cin >> PlayerX;
             cin >> PlayerY;             //진짜 좌표는(MapRows-PlayerY-1,PlayerX-1)로 변환해서 사용해야할듯
-            if (PlayerX >= MapCols || PlayerY >= MapRows || PlayerX < 1 || PlayerY < 1)
+
+            if (Map[MapRows - PlayerY][PlayerX - 1] >= 6 || Map[MapRows - PlayerY][PlayerX - 1] <= -1)
+            {
+                printf("이미 공격한 좌표입니다. 다시 입력해주세요.\n");
+                printf("공격할 좌표를 입력하세요 (x y): ");
+                PlayerX = -1;
+                PlayerY = -1;
+                continue;
+            }
+
+            if (PlayerX > MapCols || PlayerY > MapRows || PlayerX < 1 || PlayerY < 1)
             {
                 printf("잘못된 좌표입니다. 다시 입력해주세요.\n");
                 printf("공격할 좌표를 입력하세요 (x y): ");
@@ -126,11 +187,86 @@ void PrintMap() {
             else
             {
                 Hit = shipAttack(PlayerX - 1, MapRows - PlayerY, Hit);
+                if (Hit == 0)
+                {
+                    attackCount--;
+                }
+                else if (Hit == 1)
+                {
+                    attackCount--;
+                }
+
+
+                if (Map[MapRows - PlayerY][PlayerX - 1] == 8)
+                {
+                    Ship2++;
+                    if (Ship2 == 2)
+                    {
+                        Clear++;
+                    }
+                }
+                else if (Map[MapRows - PlayerY][PlayerX - 1] == 9)
+                {
+                    Ship3++;
+                    if (Ship3 == 3)
+                    {
+                        Clear++;
+                    }
+                }
+                else if (Map[MapRows - PlayerY][PlayerX - 1] == 10)
+                {
+                    Ship4++;
+                    if (Ship4 == 4)
+                    {
+                        Clear++;
+                    }
+                }
+                else if (Map[MapRows - PlayerY][PlayerX - 1] == 11)
+                {
+                    Ship5++;
+                    if (Ship5 == 5)
+                    {
+                        Clear++;
+                    }
+                }
                 break;
+
             }
         }
+        if (attackCount <= 0)
+        {
+            break;
+        }
     }
+    //결과 출력 및 게임 종료 조건 확인
+    system("cls");
+    if (attackCount == 0 && Clear < 4)
+    {
+        printf("공격 횟수를 모두 사용하였습니다. 게임에서 패배하였습니다.\n");
+        printf("적 함선의 실제 위치는 다음과 같습니다:\n");
+        for (int h = 0; h < MapRows; h++)
+        {
+            for (int w = 0; w < MapCols; w++)
+            {
+                if (Map[h][w] >= 2 && Map[h][w] <= 11)
+                {
+                    printf("O\t");
+                }
+                else
+                {
+                    printf(".\t");
+                }
+            }
+            printf("\n");
+        }
+    }
+    else if (attackCount >= 0 && Clear == 4)
+    {
+        printf("모든 적 함선을 격침시켰습니다! 게임에서 승리하였습니다.\n");
+    }
+
 }
+
 
 
 //함선 랜덤 배치
