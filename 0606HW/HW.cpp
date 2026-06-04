@@ -73,7 +73,7 @@ void PrintMap()
 
         for (int h = 0; h < MapRows; h++)
         {
-            printf("%2d |", MapRows - h);
+            printf("%2d |\t", MapRows - h);
 
             for (int w = 0; w < MapCols; w++)
             {
@@ -115,9 +115,9 @@ void PrintMap()
             printf("\n");
 
         }
-        printf("    -----------------------------------------------------------------------");
+        printf("    -------------------------------------------------------------------------------");
         printf("\n");
-        printf("    1\t");
+        printf("\t1\t");
         for (int x = 2; x <= MapCols; x++)
         {
             printf("%d\t", x);
